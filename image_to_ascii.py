@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="Image to ASCII")
 st.title("Image to ASCII")
 st.caption("Created by Drew Warner")
-st.caption("V1.1")
+st.caption("V1.1B")
 
 image_upload = st.file_uploader("Upload an image or drag from another tab below", type=["jpg", "jpeg", "png", "webp"])
 
@@ -14,7 +14,7 @@ image_upload = st.file_uploader("Upload an image or drag from another tab below"
 
 downscale_factor = st.number_input("Downscale Factor", min_value=1, value=10)
 
-invert = st.toggle("Invert Colors (Use in light mode, leave off in dark mode)")
+invert = st.toggle("Invert Colors (Use in dark mode, otherwise leave off)")
 
 #characters = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']#light to dark
 characters_input = st.text_input("Input an ascii gradient from light to dark separated by commas (no spaces needed for separation), or leave blank for the default. Spaces allowed as colors in the gradient")
