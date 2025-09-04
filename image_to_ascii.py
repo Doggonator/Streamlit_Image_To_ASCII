@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="Image to ASCII")
 st.title("Image to ASCII")
 st.caption("Created by Drew Warner")
-st.caption("V1.1C")
+st.caption("V1.1D")
 
 image_upload = st.file_uploader("Upload an image or drag from another tab below", type=["jpg", "jpeg", "png", "webp"])
 
@@ -43,6 +43,8 @@ if st.button("Process"):
             for x in range(size[0]):
                 color = pix[x, y]
                 color = (color[0] + color[1] + color[2])/3#grayscale
+                if invert:
+                    color = 255-color
                 colors.append(color)
         
         min_color = min(colors)#subtract this from any color value to bottom out values
