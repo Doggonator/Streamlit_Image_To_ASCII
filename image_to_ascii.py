@@ -4,12 +4,17 @@ import streamlit as st
 st.set_page_config(page_title="Image to ASCII")
 st.title("Image to ASCII")
 st.caption("Created by Drew Warner")
-st.caption("V1.01")
+st.caption("V1.1")
 
-image_upload = st.file_uploader("Upload an image", type=["jpg", "jpeg", "png"])
+image_upload = st.file_uploader("Upload an image or drag from another tab below", type=["jpg", "jpeg", "png", "webp"])
+
+
+
 
 
 downscale_factor = st.number_input("Downscale Factor", min_value=1, value=10)
+
+invert = st.toggle("Invert Colors (Use in light mode, leave off in dark mode)")
 
 #characters = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']#light to dark
 characters_input = st.text_input("Input an ascii gradient from light to dark separated by commas (no spaces needed for separation), or leave blank for the default. Spaces allowed as colors in the gradient")
@@ -25,14 +30,18 @@ if st.button("Process"):
                 characters = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']
         except:
             st.error("Cannot parse ascii gradient input")
-        image = Image.open(image_upload)
+
+
+        base_image = Image.open(image_upload)
+        size_base = base_image.size
+        image = base_image.resize((int(size_base[0]/downscale_factor), int(size_base[1]/downscale_factor)), resample=Image.BICUBIC)
         pix = image.load()
         size = image.size
         #Increase contrast by finding minimum and maximum color values
         colors = []
-        for y in range(int(size[1] / downscale_factor)):
-            for x in range(int(size[0] / downscale_factor)):
-                color = pix[x * downscale_factor, y * downscale_factor]
+        for y in range(size[1]):
+            for x in range(size[0]):
+                color = pix[x, y]
                 color = (color[0] + color[1] + color[2])/3#grayscale
                 colors.append(color)
         
@@ -40,13 +49,15 @@ if st.button("Process"):
         max_color = max(colors)#rescale all colors to make this the maximum value at 1
         colors = []
         total = ""
-        for y in range(int(size[1] / downscale_factor)):
+        for y in range(size[1]):
             line = []
             row = ""
-            for x in range(int(size[0] / downscale_factor)):
-                color = pix[x * downscale_factor, y * downscale_factor]
+            for x in range(size[0]):
+                color = pix[x, y]
                 color = (color[0] + color[1] + color[2])/3#grayscale
                 color = (color-min_color)*((max_color+min_color)/255)#rescale for contrast
+                if invert:
+                    color = 255-color
                 colors.append(color)
 
                 color = color * ((len(characters))/255)#0.03921568627 is for 10 gradient items magic number to convert to 1-10    
