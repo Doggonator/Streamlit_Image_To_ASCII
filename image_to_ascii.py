@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="Image to ASCII")
 st.title("Image to ASCII")
 st.caption("Created by Drew Warner")
-st.caption("V1.1D")
+st.caption("V1.1E")
 
 image_upload = st.file_uploader("Upload an image or drag from another tab below", type=["jpg", "jpeg", "png", "webp"])
 
@@ -14,7 +14,6 @@ image_upload = st.file_uploader("Upload an image or drag from another tab below"
 
 downscale_factor = st.number_input("Downscale Factor", min_value=1, value=10)
 
-invert = st.toggle("Invert Colors (Use in light mode, otherwise leave off)")
 
 #characters = [' ', '.', ':', '-', '=', '+', '*', '#', '%', '@']#light to dark
 characters_input = st.text_input("Input an ascii gradient from light to dark separated by commas (no spaces needed for separation), or leave blank for the default. Spaces allowed as colors in the gradient")
@@ -43,8 +42,6 @@ if st.button("Process"):
             for x in range(size[0]):
                 color = pix[x, y]
                 color = (color[0] + color[1] + color[2])/3#grayscale
-                if invert:
-                    color = 255-color
                 colors.append(color)
         
         min_color = min(colors)#subtract this from any color value to bottom out values
@@ -57,8 +54,6 @@ if st.button("Process"):
             for x in range(size[0]):
                 color = pix[x, y]
                 color = (color[0] + color[1] + color[2])/3#grayscale
-                if invert:
-                    color = 255-color
                 color = (color-min_color)*((max_color+min_color)/255)#rescale for contrast
 
                 colors.append(color)
